@@ -3,7 +3,7 @@ from github import Github
 from tqdm import tqdm
 
 # Set your GitHub token here
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = ""
 
 def get_readme_content(repo):
     """
