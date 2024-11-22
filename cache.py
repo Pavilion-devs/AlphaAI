@@ -10,7 +10,7 @@ from watchdog.events import FileSystemEventHandler
 
 genai.configure(api_key="AIzaSyDqwMWtQtpfAGXT3gwQzguFGO-j1Ki1fYk")
 
-text_file_path = "C:/Users/olabo/OneDrive/Desktop/AlphaAI/Ola_contents.txt"
+text_file_path = "C:/Users/olabo/OneDrive/Desktop/AlphaAI/frontend_contents.txt"
 
 if not os.path.exists(text_file_path):
     raise FileNotFoundError(f"File not found: {text_file_path}")

@@ -3,7 +3,7 @@ from github import Github
 from tqdm import tqdm
 
 # Set your GitHub token here
-GITHUB_TOKEN = ""
+GITHUB_TOKEN = "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"
 
 def get_readme_content(repo):
     """
@@ -126,17 +126,50 @@ def get_repo_contents(repo_url):
     print(f"\nFetching file contents for: {repo_name}")
     file_contents = get_file_contents_iteratively(repo)
 
-    instructions = f"Prompt: Analyze the {repo_name} repository to understand its structure, purpose, and functionality. Follow these steps to study the codebase:\n\n"
-    instructions += "1. Read the README file to gain an overview of the project, its goals, and any setup instructions.\n\n"
-    instructions += "2. Examine the repository structure to understand how the files and directories are organized.\n\n"
-    instructions += "3. Identify the main entry point of the application (e.g., main.py, app.py, index.js) and start analyzing the code flow from there.\n\n"
-    instructions += "4. Study the dependencies and libraries used in the project to understand the external tools and frameworks being utilized.\n\n"
-    instructions += "5. Analyze the core functionality of the project by examining the key modules, classes, and functions.\n\n"
-    instructions += "6. Look for any configuration files (e.g., config.py, .env) to understand how the project is configured and what settings are available.\n\n"
-    instructions += "7. Investigate any tests or test directories to see how the project ensures code quality and handles different scenarios.\n\n"
-    instructions += "8. Review any documentation or inline comments to gather insights into the codebase and its intended behavior.\n\n"
-    instructions += "9. Identify any potential areas for improvement, optimization, or further exploration based on your analysis.\n\n"
-    instructions += "10. Provide a summary of your findings, including the project's purpose, key features, and any notable observations or recommendations.\n\n"
+    instructions = f"Prompt Retrieve relevant code snippet related to the issue or bug description provided from {repo_name}. Explain the code snippet and recommend ways to solve it. Please format your response using markdown and Display with the following structure:\n\n"
+    instructions += "1. Code snippet explaination: Details of code snippet found and it relevance to issue or bug description provided. \n\n"
+    instructions += "2. Code snippet: Relevant code snippet found.\n\n"
+    instructions += "3. Reccomended solution: Code snippet to resolve issue.\n\n"
+    instructions += """4. 
+    Follow this response output I provided you with:
+    -------------------------------------------------
+    **User(Bug Description): The application is crashing when a user tries to upload an image larger than 10MB.**
+    **AI: 
+    Code snippet explaination:The provided Python code snippet defines a function named upload_image. This function is designed to handle image uploads, specifically checking the size of the uploaded image file.
+
+    Here's a breakdown of its functionality:
+
+    Parameter: Takes an image_file as input, which is likely a file object.
+    Size Check: Verifies if the size of the image_file exceeds 10MB.
+    Error Handling: If the size limit is exceeded, raises a ValueError with a descriptive message.**
+
+    Code snippet: 
+        # Relevant code snippet from `image_upload.py`
+        def upload_image(image_file):
+            if image_file.size > 10485760:  # 10MB in bytes
+                raise ValueError("Image size exceeds the 10MB limit.")
+    Reccomended solution: 
+            import logging
+
+        def upload_image(image_file):
+            try:
+            if image_file.size > 10485760:  # 10MB in bytes
+                raise ValueError("Image size exceeds the 10MB limit.")
+
+        except ValueError as e:
+            logging.error(f"Image upload failed: {str(e)}")
+            # Provide user-friendly feedback, e.g., display an error message on the frontend
+            return "Image upload failed. Please ensure the image size is below 10MB."
+        \n\n
+        """
+    instructions += """5.
+    Points to Relevant Files and Folders**: Directs the developer to specific files like `image_upload.py`, `app.py`, and `upload.js`.
+    Explains What Those Files Do**: Describes the purpose of each file and how they fit into the overall application.
+    Shows How They're Related**: Illustrates the interaction between frontend and backend during the image upload process.
+    Guides on How to Start**: Provides step-by-step instructions on setting up the environment and beginning contributions.
+    Includes All Files and Folders**: Mentions both backend and frontend directories to give a holistic view of the codebase.
+    \n\n    
+    """
     instructions += "Use the files and contents provided below to complete this analysis:\n\n"
 
     return repo_name, instructions, readme_content, repo_structure, file_contents
@@ -158,3 +191,7 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"An error occurred: {e}")
         print("Please check the repository URL and try again.")
+
+
+
+

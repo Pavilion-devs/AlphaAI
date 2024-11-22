@@ -1,10 +1,44 @@
-Prompt: You're a superintelligent code analyst with an IQ of 195. Your job is to deeply analyze the entire {repo_name} repository, 
-understand its purpose, structure, and functionality, identify any areas for improvement, and generate insightful documentation and code snippets. 
-Provide a comprehensive summary of the project’s goals, architecture, and any optimization opportunities, while enabling users to explore and search 
-the codebase with natural language queries for precise, actionable insights.
+Prompt: 
+Retrieve relevant code snippet related to the issue or bug description provided.
+Explain the code snippet and recommend ways to solve it.
 
+Please format your response using markdown and Display with the following structure:
 
-Use the files and contents provided below to complete this analysis:
+Code snippet explaination: Details of code snippet found and it relevance to issue or bug description provided
+Code snippet: Relevant code snippet found
+Reccomended solution: Code snippet to resolve issue  
+
+Example:
+-------------------------------------------------
+**User(Bug Description): The application is crashing when a user tries to upload an image larger than 10MB.**
+**AI: 
+  Code snippet explaination:The provided Python code snippet defines a function named upload_image. This function is designed to handle image uploads, specifically checking the size of the uploaded image file.
+
+  Here's a breakdown of its functionality:
+
+  Parameter: Takes an image_file as input, which is likely a file object.
+  Size Check: Verifies if the size of the image_file exceeds 10MB.
+  Error Handling: If the size limit is exceeded, raises a ValueError with a descriptive message.**
+
+  Code snippet: 
+    # Relevant code snippet from `image_upload.py`
+    def upload_image(image_file):
+        if image_file.size > 10485760:  # 10MB in bytes
+            raise ValueError("Image size exceeds the 10MB limit.")
+  Reccomended solution: 
+         import logging
+
+    def upload_image(image_file):
+        try:
+          if image_file.size > 10485760:  # 10MB in bytes
+             raise ValueError("Image size exceeds the 10MB limit.")
+
+    except ValueError as e:
+        logging.error(f"Image upload failed: {str(e)}")
+        # Provide user-friendly feedback, e.g., display an error message on the frontend
+        return "Image upload failed. Please ensure the image size is below 10MB."**
+
+Use the files and contents provided below to retrieve the relevant code snippet:
 
 README:
 # AlphaAI

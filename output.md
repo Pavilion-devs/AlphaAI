@@ -1,83 +1,96 @@
 Welcome to the code review tool
-> What do you think of this codebase?
+>Hi. I'm trying to contribute to this codebase and I'm not an expert but I'm confused and don't know where to start.
 
-The codebase
- presents a conversational AI application built using LangChain, FastAPI, and Azure Cognitive Services
- for speech recognition and text-to-speech. It has a good structure with
- modules dedicated to specific functions. However, there are some areas for improvement:
+Let's get
+ you up to speed and ready to contribute. Here's a breakdown to guide you:
 
-**1. Security**
 
-* **OpenAI API Key and Model Name:**
- These sensitive credentials are hardcoded in the `Main.py` file. This is a major security vulnerability, as anyone with access to the code could easily extract
- them.
-    * **Priority:** High
-    * **Issue Description:** Sensitive API keys and model names are exposed in the codebase.
-    * **Proposed Solution:** Use environment variables to store the API key and model name.
- Load these variables in your code using a library like `python-dotenv` (as you are already doing).
-    * **Expected Outcome:** Improved security by hiding sensitive information from the code.
+**1. Project Structure**
 
-**2. Maintainability**
+* **frontend:** This is the directory
+ for your React application, containing all the source code for the front end.
+    * **public:** This folder holds static files like images, fonts, and
+ the `index.html` file.
+    * **src:**  This is the heart of your React codebase, with components, styles, API interactions, and
+ more.
+        * **components:**  Holds reusable UI components.
+        * **styles:** Contains CSS files for styling.
+        * **api:**  Handles communication with the backend (API calls).
+        * **hooks:**
+Custom hooks to extract logic and reuse code.
+        * **context:**  Used for global state management (e.g., authentication).
+    * **README.md:**  Provides instructions for getting started with the project.
+    * **
+package.json:** Lists project dependencies and scripts for running the application.
 
-* **Large and
- Complex `__init__.py`:** This file contains a substantial amount of code, including multiple classes and functions. It would be beneficial to split 
-this file into smaller, more focused modules for better organization and maintainability.
-    * **Priority:** Medium
-    * **Issue Description:** The `__init__.py`
- file contains a lot of code that could be better organized into multiple modules.
-    * **Proposed Solution:** Split the code into separate modules for each logical component (e.g., `planet.py`, `channel.py`, `newsitem.py`, etc.). 
-    * **Expected Outcome:** Improved
- readability, maintainability, and testability of the codebase.
+* **backend:** (Likely not included in the provided files, but you'll need it) This is where the backend server resides.
 
-* **Limited Comments:** Some sections of the code lack sufficient comments, making it difficult to understand the intent and logic behind certain parts.
-    * **Priority:** Medium
-    * **Issue Description:** Some sections of the code lack sufficient comments.
+**2. Understanding the Files**
 
-    * **Proposed Solution:** Add comments to explain complex logic and intent, particularly for functions and classes.
-    * **Expected Outcome:** Improved code readability and maintainability.
+* **README.md:** This is your entry point for
+ project information. It explains how to run the application and build it for production.
+* **package.json:** This file lists all the libraries and packages used in the project. It also defines scripts for various tasks like starting the development 
+server (`npm start`) or creating a production build (`npm run build`).
+* **
+src/App.js:**  This is the main component of your application. It defines the routing structure, and how different components are displayed based on the URL.
+* **src/index.js:** This is where the React application is bootstrapped and rendered into the `index.html` file.
+* **src
+/context/AuthContext.js:** This file manages authentication state and handles user login/logout.
+* **src/hooks/auth/**.js:**  These files contain custom hooks related to authentication (e.g., `useSignup`, `useLogin`, `useLogout`).
+* **src/components/**.js:**
+  These files hold UI components (e.g., `Navbar`, `Hero`, `Products`, `Cart`).
+* **src/api/axiosConfig.js:** This file sets up the Axios library for making API calls to the backend.
+* **src/api/config/routes.js:** Defines the
+ URLs (endpoints) for your API requests.
+* **src/styles/**.modules.css:**  These are CSS files that contain styles for the components.
 
-**3. Error Handling**
+**3. How Frontend and Backend Interact**
 
-* **Incomplete Error Handling:** While there's some error handling for specific scenarios like LUIS API failures, there'
-s a lack of general error handling for potential exceptions that might arise during the execution of the application.
-    * **Priority:** Medium
-    * **Issue Description:** The code lacks comprehensive error handling for unexpected exceptions.
-    * **Proposed Solution:** Implement try-except blocks for critical parts of the code to handle potential
- exceptions gracefully. You can also log errors to a file for debugging purposes.
-    * **Expected Outcome:** Improved robustness and reliability of the application.
+* **API Calls:** The frontend uses Axios (configured in `src/api/axiosConfig.js
+`) to send requests to the backend server. These requests are directed to specific endpoints defined in `src/api/config/routes.js`.
+* **Data Transfer:** The backend sends responses back to the frontend as JSON data. These responses can contain user information, product data, or other information.
+* **Authentication:**
+  The frontend uses the `AuthContext` (in `src/context/AuthContext.js`) to manage the user's authentication status. This is typically done with tokens (access token and refresh token) stored in localStorage.
 
-* **Uninformative `HTTPException`:** The `HTTPException` in `VirtualGuide.py` doesn't provide specific error details. Consider adding more information
- about the reason for the exception.
-    * **Priority:** Medium
-    * **Issue Description:** Uninformative error messages in the `HTTPException`.
-    * **Proposed Solution:** Include a descriptive error message in the `HTTPException` to help with debugging.
-    * **Expected Outcome:** Improved error
- reporting and debugging.
+**4. Getting Started with Contributions**
 
-**4. Functionality**
+1. **Set Up the Environment:**
+    * **
+Backend:**  Ensure you have a backend server running (e.g., Express, Django).  You'll need the project files and instructions to set it up.
+    * **Frontend:**
+        * Install Node.js and npm (comes with Node.js).
+        * Navigate to the `frontend` directory in
+ your terminal.
+        * Run `npm install` to install project dependencies.
+2. **Run the Frontend:**
+    *  Run `npm start` to start the development server. This will open the application in your browser at `http://localhost:3000`.
+3. **Identify a
+ Contribution:**
+    *  Review the project's `README.md` and issues (if using a platform like GitHub).
+    *  Find a task that interests you and that you're comfortable with.
+4. **Develop and Test:**
+    *  Make your changes in the appropriate files (e
+.g., components, styles, hooks).
+    *  Test your changes thoroughly in the browser.
+5. **Create a Pull Request:**
+    *  If you're working on a project with a team, create a pull request on GitHub or your chosen version control system.
 
-* **Speech Recognition:** The code seems to rely on the "SpeechToText.py" module, which is not provided. This module likely handles the speech recognition part of the application. Make sure this module is well-tested and efficient.
-    * **Priority:**
- Medium
-    * **Issue Description:** The speech recognition module is not provided for review.
-    * **Proposed Solution:** Review the speech recognition module and ensure it handles various speech input scenarios accurately and efficiently.   
+**5. Examples
+ of Contributions**
 
-* **Conversation History Management:** The code uses a simple list (`conversation_history`) to store conversation history.
- Consider using a more robust data structure or a database to manage the conversation history effectively.
-    * **Priority:** Low
-    * **Issue Description:** Simple list used for managing conversation history.
-    * **Proposed Solution:** Explore using a database or a more advanced data structure to store the conversation history.
+* **Add a new component:** Create a new component in the `src/components` folder and add it to the routing structure in `src/App.js`.
+* **Fix a bug:**  Identify a bug, fix it in the relevant file, and test your solution.
+*
+ **Improve styling:** Update CSS in `src/styles` to make the application look better.
+* **Add API calls:**  Create new API endpoints in the backend and write code to make requests to them from the frontend using Axios.
 
-* **Expected Outcome:** Improved scalability and persistence of the conversation history.
+**Important Tips:**
 
-**5. Other Recommendations**
+* **Start Small:** Don't try to
+ tackle massive tasks right away. Begin with smaller, more manageable contributions.
+* **Communicate:** If you're working on a team, communicate with others about your contributions.
+* **Read the Code:** Familiarize yourself with the existing codebase before making changes.
+* **Follow Style Guides:**  Adhere to the
+ project's existing code style and conventions.
 
-* **Code Formatting:** Improve code formatting for better readability.
-* **Unit Testing:** Add comprehensive unit tests to cover different scenarios and edge cases.
-* **Integration Testing:** Implement integration tests to
- verify interactions between different modules.
-
-**Summary of Findings**
-
-This codebase demonstrates a promising approach to building a conversational AI application. However, it has some security, maintainability, and error handling issues that need to be addressed. By implementing the proposed solutions, you can significantly improve the security, reliability, and maintainability of
- the application.
+Let me know if you have any other questions or would like help with specific tasks.

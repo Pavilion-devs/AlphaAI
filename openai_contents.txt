@@ -1,0 +1,502 @@
+Prompt: Analyze the openai repository to understand its structure, purpose, and functionality. Follow these steps to study the codebase:
+
+1. Read the README file to gain an overview of the project, its goals, and any setup instructions.
+
+2. Examine the repository structure to understand how the files and directories are organized.
+
+3. Identify the main entry point of the application (e.g., main.py, app.py, index.js) and start analyzing the code flow from there.
+
+4. Study the dependencies and libraries used in the project to understand the external tools and frameworks being utilized.
+
+5. Analyze the core functionality of the project by examining the key modules, classes, and functions.
+
+6. Look for any configuration files (e.g., config.py, .env) to understand how the project is configured and what settings are available.
+
+7. Investigate any tests or test directories to see how the project ensures code quality and handles different scenarios.
+
+8. Review any documentation or inline comments to gather insights into the codebase and its intended behavior.
+
+9. Identify any potential areas for improvement, optimization, or further exploration based on your analysis.
+
+10. Provide a summary of your findings, including the project's purpose, key features, and any notable observations or recommendations.
+
+Use the files and contents provided below to complete this analysis:
+
+README:
+# Irawo AI Project - AI Documentation
+
+## Overview
+
+Welcome to the AI documentation for the Irawo project. This document provides an overview of the artificial intelligence components, models, and services used in the project.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [AI Services](#ai-services)
+    1. [Azure OpenAI Service](#azure-openai-service)
+    2. [Langchain](#langchain)
+
+3. [Integration with Frontend and Backend](#integration-with-frontend-and-backend)
+4. [Deployment](#deployment)
+5. [Monitoring and Evaluation](#monitoring-and-evaluation)
+6. [References](#references)
+
+## Introduction
+
+The Irawo project aims to revolutionize social skills development through AI-driven realistic conversations. Leveraging Azure OpenAI Service and Langchain, our platform provides users with a virtual social coach for interactive learning.
+
+## AI Services
+
+### Azure OpenAI Service
+
+Azure OpenAI Service serves as the backbone of our conversation generation. We utilize its chat-based language models to provide users with dynamic and context-aware responses. The service is integrated into our backend for seamless communication.
+
+### Langchain
+
+Langchain plays a crucial role in enhancing the interactive capabilities of our virtual social coach. It contributes to the conversation flow, ensuring realistic dialogues and dynamic user interactions.
+
+
+## Integration with Frontend and Backend
+
+The AI components seamlessly integrate into both frontend and backend systems. The frontend communicates user inputs to the backend, which, in turn, interacts with Azure OpenAI Service and Langchain to generate appropriate responses.
+
+## Deployment
+
+AI components are deployed using Azure services, ensuring scalability and reliability. Continuous integration and deployment pipelines guarantee efficient updates and improvements.
+
+## Monitoring and Evaluation
+
+We implement monitoring systems to track model performance and user interactions. Regular evaluations help refine models and enhance the overall user experience.
+
+## References
+
+- [Azure OpenAI Documentation](https://docs.microsoft.com/en-us/azure/openai/)
+- [Langchain GitHub Repository](https://github.com/langchain)
+
+
+Repository Structure: openai
+/.gitignore
+/README.md
+/__pycache__/
+/main.py
+/overallfeedback.py
+/requirements.txt
+/virtualguide.py
+/__pycache__/SpeechToText.cpython-312.pyc
+/__pycache__/feedback.cpython-312.pyc
+/__pycache__/irawo.cpython-312.pyc
+/__pycache__/luis.cpython-312.pyc
+/__pycache__/main.cpython-312.pyc
+/__pycache__/models.cpython-312.pyc
+/__pycache__/overallfeedback.cpython-312.pyc
+/__pycache__/speech.cpython-312.pyc
+/__pycache__/text.cpython-312.pyc
+/__pycache__/texttospeech.cpython-312.pyc
+/__pycache__/virtualguide.cpython-312.pyc
+
+
+File: /.gitignore
+Content: Skipped binary file
+
+File: /README.md
+Content:
+# Irawo AI Project - AI Documentation
+
+## Overview
+
+Welcome to the AI documentation for the Irawo project. This document provides an overview of the artificial intelligence components, models, and services used in the project.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [AI Services](#ai-services)
+    1. [Azure OpenAI Service](#azure-openai-service)
+    2. [Langchain](#langchain)
+
+3. [Integration with Frontend and Backend](#integration-with-frontend-and-backend)
+4. [Deployment](#deployment)
+5. [Monitoring and Evaluation](#monitoring-and-evaluation)
+6. [References](#references)
+
+## Introduction
+
+The Irawo project aims to revolutionize social skills development through AI-driven realistic conversations. Leveraging Azure OpenAI Service and Langchain, our platform provides users with a virtual social coach for interactive learning.
+
+## AI Services
+
+### Azure OpenAI Service
+
+Azure OpenAI Service serves as the backbone of our conversation generation. We utilize its chat-based language models to provide users with dynamic and context-aware responses. The service is integrated into our backend for seamless communication.
+
+### Langchain
+
+Langchain plays a crucial role in enhancing the interactive capabilities of our virtual social coach. It contributes to the conversation flow, ensuring realistic dialogues and dynamic user interactions.
+
+
+## Integration with Frontend and Backend
+
+The AI components seamlessly integrate into both frontend and backend systems. The frontend communicates user inputs to the backend, which, in turn, interacts with Azure OpenAI Service and Langchain to generate appropriate responses.
+
+## Deployment
+
+AI components are deployed using Azure services, ensuring scalability and reliability. Continuous integration and deployment pipelines guarantee efficient updates and improvements.
+
+## Monitoring and Evaluation
+
+We implement monitoring systems to track model performance and user interactions. Regular evaluations help refine models and enhance the overall user experience.
+
+## References
+
+- [Azure OpenAI Documentation](https://docs.microsoft.com/en-us/azure/openai/)
+- [Langchain GitHub Repository](https://github.com/langchain)
+
+
+File: /main.py
+Content:
+from langchain_openai import ChatOpenAI
+import openai
+import threading
+import time
+import os
+import asyncio
+import json
+from langchain.prompts import HumanMessagePromptTemplate, SystemMessagePromptTemplate, ChatPromptTemplate, MessagesPlaceholder
+from langchain.schema.messages import HumanMessage, ChatMessage, AnyMessage
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationChain
+from typing import List, Dict, Any
+from virtualguide import handle_conversation_analysis
+from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import JSONResponse
+from overallfeedback import overall_feedback
+import uvicorn
+import requests
+
+from dotenv import load_dotenv
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+MODEL_NAME = os.getenv("MODEL_NAME")
+
+llm = ChatOpenAI(
+    openai_api_key = OPENAI_API_KEY,
+    temperature = 0.5,
+    model_name=MODEL_NAME
+)
+ 
+app = FastAPI()
+
+class ExtendedConversationBufferMemory(ConversationBufferMemory):
+    extra_variables: List[str] = ["category", "scenario_tag", "role", "user_name"]
+
+    @property
+    def memory_variables(self) -> List[str]:
+        return [self.memory_key] + self.extra_variables
+
+    def load_memory_variables(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        d = super().load_memory_variables(inputs)
+        d["history"] = inputs.get("history") or []
+
+        for k in self.extra_variables:
+            d[k] = inputs.get(k)
+
+        return d
+
+    def save_memory_variables(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        super().save_memory_variables(inputs)
+        inputs["history"] = self.memory["history"]
+
+        for k in self.extra_variables:
+            inputs[k] = self.memory[k]
+
+        return inputs
+    
+
+prompt_template = SystemMessagePromptTemplate.from_template(
+template= """Context: Let's imagine we are socially interacting in a {category}. We've just struck up a conversation, where I am {scenario_tag} with you. This sparks a fascinating conversation where we both talk about general conversation topics like
+- Discussing personal journeys.
+- Exchanging cultural insights,sharing interests.
+- Reasonating with each other stories.
+
+You are Star. You are here to play a role of {role} Feel free to adopt a persona that fits the setting and resonates with you.
+Engage naturally with me.
+Build rapport by actively listening, showing a sincere interest in my experiences and perspectives.
+Let the conversation flow organically, adjusting to my interests and sharing your own insights when appropriate. We're in this together, learning and connecting.
+Personalize your responses. Reference details from my introduction to demonstrate attentiveness and make me feel heard.
+Encourage me to delve deeper by asking open-ended questions that invite me to elaborate on my thoughts and feelings.
+Contribute to the conversation by sharing relevant anecdotes or perspectives, fostering a sense of mutual understanding.
+Remember, tone and body language matter. Convey warmth, openness, and active listening through your words and nonverbal cues.
+Above all, prioritize creating a positive and enjoyable experience for both of us. Relax, have fun, and let the conversation unfold naturally.
+If I give an incomplete response tell me that you don't understand. Never try to assume what the I am saying.
+Do not always repeat your questions or sentences.
+Your responses should be less than 15 words, unless the my request requires reasoning or long-form outputs.
+My name is {user_name}!
+"""
+)
+
+human_msg_template = HumanMessagePromptTemplate.from_template(template="{input}")
+prompt_template = ChatPromptTemplate.from_messages([prompt_template, MessagesPlaceholder(variable_name="history"), human_msg_template])
+memory = ExtendedConversationBufferMemory(
+    extra_variables=["category", "scenario_tag", "role", "user_name"]
+)
+
+conversation = ConversationChain(
+    llm=llm,
+    prompt=prompt_template,
+    memory=memory,
+    verbose=True,
+)
+
+class UserMessage(BaseModel):
+    message: str
+    category: str
+    scenario_tag: str
+    role: str
+    username: str
+
+class AIResponse(BaseModel):
+    response: str
+
+class SpeechRecognitionResult(BaseModel):
+    recognized_text: str
+
+
+conversation_history = []
+
+@app.post("/conversation")
+async def get_ai_response(user_message: UserMessage, response_format: str):
+    user_input = user_message.message
+
+    categories = user_message.category
+    scenario_tag = user_message.scenario_tag
+    role = user_message.role
+    username = user_message.username
+
+    if user_input.lower() == "feedback":
+        feedback = overall_feedback(conversation_history)
+        custom_data = {"feedback": feedback, "status": 200}
+        return JSONResponse(content=custom_data)
+
+    user_message = HumanMessage(content=user_input)
+    conversation_history.append(user_message)
+
+    result = conversation({
+    "input": user_input,
+    "history": conversation_history,
+    "category": categories,
+    "scenario_tag": scenario_tag,
+    "role": role,
+    "user_name": username,
+    })
+
+    ai_response = result['response']
+
+    if response_format == "text":
+        ai_message = ChatMessage(role="system", content=ai_response)
+        conversation_history.append(ai_message)
+        custom_data = {"response": ai_response, "status": 200}
+        return JSONResponse(content=custom_data)
+
+
+    elif response_format == "voice":
+        ai_message = ChatMessage(role="system", content=ai_response)
+        conversation_history.append(ai_message)
+        custom_data = {"response": ai_response, "status": 200}
+        return JSONResponse(content=custom_data)
+    else:
+        custom_data = {"error": "Format not found"}
+        return JSONResponse(content=custom_data, status_code=404)
+    
+
+
+File: /overallfeedback.py
+Content:
+import os
+from langchain.schema import HumanMessage, ChatMessage
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+def sentiment_score(conversation_history):
+    combined_text = ' '.join([message.content for message in conversation_history if isinstance(message, HumanMessage)])
+
+    sid_obj = SentimentIntensityAnalyzer()
+
+    sentiment_dict = sid_obj.polarity_scores(combined_text)
+    Negative = sentiment_dict['neg']
+    Positive = sentiment_dict['pos']
+
+    if Positive >= 0.05 :
+        return 1
+    elif Negative <= - 0.05 :
+        return 0.5
+    else :
+        return None
+
+
+
+def user_word_count(conversation_history):
+    total_word_count = 0
+    response_count = 0
+    for message in conversation_history:
+        if isinstance(message, HumanMessage):
+            word_count = len(message.content.split())
+            total_word_count += word_count
+            response_count += 1
+    if response_count > 0:
+        return total_word_count / response_count
+    else:
+        return 0
+
+def conversation_length(conversation_history):
+    total_length = 0
+    for message in conversation_history:
+        if isinstance(message, HumanMessage):
+            # Adjust based on your preference: words or characters
+            content_length = len(message.content.split())  # For word count
+            # content_length = len(message.content)  # For character count
+            total_length += content_length
+    return total_length
+
+
+def overall_engagement_score(conversation_history, word_count_weight=0.3, conversation_length_weight=0.7):
+    user_word_count_score = normalize_score(user_word_count(conversation_history), 0, 20)
+    conversation_length_score = normalize_score(conversation_length(conversation_history), 0, 200)
+    overall_score = (user_word_count_score * word_count_weight) + (conversation_length_score * conversation_length_weight)
+    return overall_score
+
+def normalize_score(score, min_value, max_value):
+    if max_value == min_value:
+        return 0
+    return (score - min_value) / (max_value - min_value)
+
+
+def overall_feedback(conversation_history):
+    sentiment = sentiment_score(conversation_history)
+    engagement = overall_engagement_score(conversation_history, word_count_weight=0.4, conversation_length_weight=0.6)
+
+    if engagement > 1:
+        engagement =1
+
+    sentiment = sentiment if sentiment is not None else 0
+    engagement = engagement if engagement is not None else 0
+
+    overall_feedback_percentage = round((sentiment + engagement) /2 * 100)
+
+    if overall_feedback_percentage >=75:
+        return f"You're a communication rockstar! Your engagement and insights were top-notch. Your Feedback is {overall_feedback_percentage} %"
+    elif overall_feedback_percentage >= 50:
+        return f"Great Job.There's space to be more proactive and dive deeper into the topics. Your Feedback is {overall_feedback_percentage} %"
+    elif overall_feedback_percentage >= 25:
+        return f"You could have been more engaging and insightful. Your Feedback is {overall_feedback_percentage} %"
+    else:
+        return f"You can do better. Your Feedback is {overall_feedback_percentage} %"
+
+File: /requirements.txt
+Content:
+langchain_openai
+langchain
+fastapi
+openai
+uvicorn
+vaderSentiment
+python-dotenv
+
+File: /virtualguide.py
+Content:
+import os
+import requests
+from fastapi import FastAPI, HTTPException, status
+
+
+from dotenv import load_dotenv
+load_dotenv()
+
+luis_endpoint = os.getenv("luis_endpoint")
+subscription_key = os.getenv("luis_key")
+api_version = "2023-04-01"
+project_name = "Irawo-New"
+deployment_name = os.getenv("deployment_name_luis")
+
+url = f"{luis_endpoint}/language/:analyze-conversations?api-version={api_version}"
+headers = {
+    "Ocp-Apim-Subscription-Key": subscription_key,
+    "Content-Type": "application/json",
+}
+
+def handle_conversation_analysis(user_input):
+    conversation_item = {
+        "id": "MyJobName",
+        "participantId": "MyJobName",
+        "text": user_input
+    }
+
+    body = {
+        "kind": "Conversation",
+        "analysisInput": {
+            "conversationItem": conversation_item
+        },
+        "parameters": {
+            "projectName": project_name,
+            "deploymentName": deployment_name,
+            "stringIndexType": "TextElement_V8"
+        }
+    }
+
+    response = requests.post(url, headers=headers, json=body)
+
+    if response.status_code == 200:
+        result = response.json()
+        top_intent = result["result"]["prediction"]["topIntent"]
+        confidence_score = result['result']['prediction']['intents'][0]['confidenceScore']
+
+        threshold = 0.85
+        threshold_confidence = 0.87
+
+        if top_intent == "Elaboration" and confidence_score > threshold:
+            print("elaborate")
+            return "Elaborate"
+
+        elif top_intent == "PositiveReinforcement" and confidence_score > threshold_confidence:
+            print("great")
+            return "Great"
+        else:
+            raise HTTPException(status_code=404, detail="threshold not passed")
+
+    else:
+        print("Error:", response.status_code, response.text)
+        return NameError
+
+
+File: /__pycache__/SpeechToText.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/feedback.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/irawo.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/luis.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/main.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/models.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/overallfeedback.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/speech.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/text.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/texttospeech.cpython-312.pyc
+Content: Skipped binary file
+
+File: /__pycache__/virtualguide.cpython-312.pyc
+Content: Skipped binary file
+
