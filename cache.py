@@ -8,7 +8,13 @@ import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-genai.configure(api_key="AIzaSyDqwMWtQtpfAGXT3gwQzguFGO-j1Ki1fYk")
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GENAI_API_KEY = os.getenv('api_key')
+
+genai.configure(api_key=GENAI_API_KEY)
 
 text_file_path = "C:/Users/olabo/OneDrive/Desktop/AlphaAI/frontend_contents.txt"
 
